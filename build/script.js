@@ -1,10 +1,24 @@
-import { WORDS } from "./words.js";
+import { WORDS_EXPLAINED } from "./words.js";
 
 const NUMBER_OF_GUESSES = 6;
 let guessesRemaining = NUMBER_OF_GUESSES;
 let currentGuess = [];
 let nextLetter = 0;
-let rightGuessString = WORDS[Math.floor(Math.random() * WORDS.length)]
+// MAKE THIS DEPENDENT ON THE UNIX TIMESTAMP
+let rightGuess = WORDS_EXPLAINED[Math.floor(Math.random() * WORDS.length)]
+
+
+
+
+// ALSO GET THE EXPLANATION
+// ALSO GET THE HINT FOR THE WORD.. i.e is it a person/proper noun
+// ALSO GET THE NUMBER OF LETTERS IN THE CORRECT GUESS STRING
+let rightGuessString = rightGuess.word
+let ANSWER_LENGTH = rightGuess.word.length
+let rightGuessExplanation = rightGuess.explanation
+let rightGuessHint = rightGuess.hint
+
+// let ANSWER_LENGTH = 5
 
 console.log(rightGuessString)
 
@@ -15,7 +29,7 @@ function initBoard() {
         let row = document.createElement("div")
         row.className = "letter-row"
         
-        for (let j = 0; j < 5; j++) {
+        for (let j = 0; j < ANSWER_LENGTH; j++) {
             let box = document.createElement("div")
             box.className = "letter-box"
             row.appendChild(box)
@@ -61,7 +75,7 @@ function checkGuess () {
         guessString += val
     }
 
-    if (guessString.length != 5) {
+    if (guessString.length != ANSWER_LENGTH) {
         toastr.error("Not enough letters!")
         return
     }
@@ -72,7 +86,7 @@ function checkGuess () {
     }
 
     
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < ANSWER_LENGTH; i++) {
         let letterColor = ''
         let box = row.children[i]
         let letter = currentGuess[i]
@@ -108,6 +122,7 @@ function checkGuess () {
 
     if (guessString === rightGuessString) {
         toastr.success("You guessed right! Game over!")
+        toastr.info(`"${rightGuessString}": ${rightGuessExplanation}`)
         guessesRemaining = 0
         return
     } else {
@@ -117,13 +132,14 @@ function checkGuess () {
 
         if (guessesRemaining === 0) {
             toastr.error("You've run out of guesses! Game over!")
-            toastr.info(`The right word was: "${rightGuessString}"`)
+            // toastr.info(`The right word was: "${rightGuessString}"`)
+            toastr.info(`The right word was: "${rightGuessExplanation}": ${rightGuessExplanation}`)
         }
     }
 }
 
 function insertLetter (pressedKey) {
-    if (nextLetter === 5) {
+    if (nextLetter === ANSWER_LENGTH) {
         return
     }
     pressedKey = pressedKey.toLowerCase()
