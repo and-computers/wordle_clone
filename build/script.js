@@ -1,11 +1,11 @@
-import { WORDS_EXPLAINED } from "./words.js";
+import { WORDS_EXPLAINED, WORD_CHOICES } from "./words.js";
 
 const NUMBER_OF_GUESSES = 6;
 let guessesRemaining = NUMBER_OF_GUESSES;
 let currentGuess = [];
 let nextLetter = 0;
 // MAKE THIS DEPENDENT ON THE UNIX TIMESTAMP
-let rightGuess = WORDS_EXPLAINED[Math.floor(Math.random() * WORDS.length)]
+let rightGuess = WORDS_EXPLAINED[Math.floor(Math.random() * WORDS_EXPLAINED.length)]
 
 
 
@@ -20,9 +20,21 @@ let rightGuessHint = rightGuess.hint
 
 // let ANSWER_LENGTH = 5
 
-console.log(rightGuessString)
+// console.log(rightGuessString)
 
 function initBoard() {
+
+    console.log(rightGuessHint)
+
+    if(rightGuessHint) {
+
+        let hintBox = document.getElementById("hint-text")
+
+        hintBox.innerHTML = "Hint: " + rightGuessHint
+    }
+
+
+
     let board = document.getElementById("game-board");
 
     for (let i = 0; i < NUMBER_OF_GUESSES; i++) {
@@ -67,6 +79,10 @@ function deleteLetter () {
 }
 
 function checkGuess () {
+
+
+    let modal = document.getElementById("myModal");
+
     let row = document.getElementsByClassName("letter-row")[6 - guessesRemaining]
     let guessString = ''
     let rightGuess = Array.from(rightGuessString)
@@ -80,7 +96,7 @@ function checkGuess () {
         return
     }
 
-    if (!WORDS.includes(guessString)) {
+    if (!WORD_CHOICES.includes(guessString)) {
         toastr.error("Word not in list!")
         return
     }
@@ -121,9 +137,19 @@ function checkGuess () {
     }
 
     if (guessString === rightGuessString) {
-        toastr.success("You guessed right! Game over!")
-        toastr.info(`"${rightGuessString}": ${rightGuessExplanation}`)
+        // toastr.success("You guessed right! Game over!")
+        // toastr.info(`"${rightGuessString}": ${rightGuessExplanation}`)
+
+
+
+        document.getElementById("modal-text").innerHTML ="You guessed right! Game over!\n\n" + `"${rightGuessString}": ${rightGuessExplanation}`
+
+        modal.style.display = "block";
+
         guessesRemaining = 0
+
+
+
         return
     } else {
         guessesRemaining -= 1;
@@ -133,7 +159,12 @@ function checkGuess () {
         if (guessesRemaining === 0) {
             toastr.error("You've run out of guesses! Game over!")
             // toastr.info(`The right word was: "${rightGuessString}"`)
-            toastr.info(`The right word was: "${rightGuessExplanation}": ${rightGuessExplanation}`)
+            // toastr.info(`The right word was: "${rightGuessExplanation}": ${rightGuessExplanation}`)
+
+            document.getElementById("modal-text").innerHTML ="You've run out of guesses! Game over!\n\n" + `The right word was: "${rightGuessString}": ${rightGuessExplanation}`
+
+
+            modal.style.display = "block";
         }
     }
 }
@@ -152,6 +183,12 @@ function insertLetter (pressedKey) {
     currentGuess.push(pressedKey)
     nextLetter += 1
 }
+
+
+
+
+
+
 
 const animateCSS = (element, animation, prefix = 'animate__') =>
   // We create a Promise and return it
@@ -172,6 +209,37 @@ const animateCSS = (element, animation, prefix = 'animate__') =>
 
     node.addEventListener('animationend', handleAnimationEnd, {once: true});
 });
+
+
+
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+// var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on the button, open the modal
+// btn.onclick = function() {
+//   modal.style.display = "block";
+// }
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+
+
 
 document.addEventListener("keyup", (e) => {
 
